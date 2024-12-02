@@ -2,6 +2,8 @@ package it.unibo.oop.lab.lambda;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,12 +16,16 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * This class will contain four utility functions on lists and maps, of which the first one is provided as example.
+ * This class will contain four utility functions on lists and maps, of which
+ * the first one is provided as example.
  * 
- * All such methods take as second argument a functional interface from the Java library (java.util.function).
- * This enables calling them by using the concise lambda syntax, as it's done in the main function.
+ * All such methods take as second argument a functional interface from the Java
+ * library (java.util.function).
+ * This enables calling them by using the concise lambda syntax, as it's done in
+ * the main function.
  *
- * Realize the three methods **WITHOUT** using the Stream library, but only leveraging the lambdas.
+ * Realize the three methods **WITHOUT** using the Stream library, but only
+ * leveraging the lambdas.
  *
  */
 public final class LambdaUtilities {
@@ -29,11 +35,11 @@ public final class LambdaUtilities {
 
     /**
      * @param list
-     *            the input list
+     *             the input list
      * @param op
-     *            the process to run on each element
+     *             the process to run on each element
      * @param <T>
-     *            element type
+     *             element type
      * @return a new list containing, for each element of list, the element and
      *         a processed version
      */
@@ -48,39 +54,46 @@ public final class LambdaUtilities {
 
     /**
      * @param list
-     *            input list
+     *             input list
      * @param pre
-     *            predicate to execute
+     *             predicate to execute
      * @param <T>
-     *            element type
+     *             element type
      * @return a list where each value is an Optional, holding the previous
      *         value only if the predicate passes, and an Empty optional
      *         otherwise.
      */
     public static <T> List<Optional<T>> optFilter(final List<T> list, final Predicate<T> pre) {
-        /*
-         * Suggestion: consider Optional.filter
-         */
-        return null;
+        List<Optional<T>> myList = new ArrayList<>(list.size());
+        list.forEach(t -> {
+            myList.add(Optional.of(t).filter(pre));
+
+        });
+
+        return myList;
     }
 
     /**
      * @param list
-     *            input list
+     *             input list
      * @param op
-     *            a function that, for each element, computes a key
+     *             a function that, for each element, computes a key
      * @param <T>
-     *            element type
+     *             element type
      * @param <R>
-     *            key type
+     *             key type
      * @return a map that groups into categories each element of the input list,
      *         based on the mapping done by the function
      */
     public static <R, T> Map<R, Set<T>> group(final List<T> list, final Function<T, R> op) {
-        /*
-         * Suggestion: consider Map.merge
-         */
-        return null;
+        Map<R, Set<T>> myMap = new HashMap<>();
+        list.forEach(t -> {
+            if (!myMap.keySet().contains(op.apply(t))) {
+                myMap.put(op.apply(t), new HashSet<>());
+            }
+            myMap.get(op.apply(t)).add(t);
+        });
+        return myMap;
     }
 
     /**
@@ -96,17 +109,24 @@ public final class LambdaUtilities {
      *         by the supplier
      */
     public static <K, V> Map<K, V> fill(final Map<K, Optional<V>> map, final Supplier<V> def) {
-        /*
-         * Suggestion: consider Optional.orElse
-         *
-         * Keep in mind that a map can be iterated through its forEach method
-         */
-        return null;
+        Map<K, V> myMap = new HashMap<>();
+
+        map.forEach((t,k)->{
+            myMap.put( t , map.get(t).orElse(def.get()));
+        });
+
+    /*
+     * Suggestion: consider Optional.orElse
+     *
+     * Keep in mind that a map can be iterated through its forEach method
+     */
+    return myMap;
+
     }
 
     /**
      * @param args
-     *            ignored
+     *             ignored
      */
     @SuppressWarnings("PMD.SystemPrintln")
     public static void main(final String[] args) {
